@@ -3,7 +3,9 @@ Find the digits of the next largest palindromic number.
 */
 
 fun main() {
-    println(nextPalindrome(9559))
+    val currentPalindrome = 1441 // Input any palindromic integer here.
+    val nextPalindrome = nextPalindrome(currentPalindrome)
+    println("The given palindromic integer is $currentPalindrome. The next palindromic integer is $nextPalindrome.")
 }
 
 fun digitList(integer: Int): MutableList<Int> {
@@ -11,7 +13,7 @@ fun digitList(integer: Int): MutableList<Int> {
     Create a list of an integer's digits in order.
 
     Given an integer, return a list of the integer's digits, from most
-    significant to least significant. Thus the number 123 would result in the
+    significant to least significant. Thus, the number 123 would result in the
     list [1, 2, 3].
 
     Args:
@@ -75,7 +77,7 @@ fun assemble(digits: List<Int>): Int {
     example the list [1, 2, 3] would be assembled into the integer 123.
 
     Args:
-        digits: A list of ints representing the digits of the number to
+        digits: A list of integers representing the digits of the number to
             assemble.
 
     Returns:
