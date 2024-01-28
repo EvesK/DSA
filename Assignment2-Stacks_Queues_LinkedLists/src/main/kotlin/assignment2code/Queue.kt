@@ -2,7 +2,7 @@ package assignment2code
 
 interface Queue<T> {
     /**
-     * Add [data] to the front (back?) of the queue.
+     * Add [data] to the back of the queue.
      */
     fun enqueue(data: T)
     /**
