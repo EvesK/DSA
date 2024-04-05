@@ -1,5 +1,10 @@
 package assignment6code
 
+fun main() {
+    val myKMP = KMP ("agaadcaaab", "aab")
+    myKMP.printMatch()
+}
+
 /**
  * A class implementing the Knuth-Morris-Pratt (KMP) string searching algorithm to find occurrences of a substring (pattern) within a string (text).
  *
@@ -43,8 +48,8 @@ class KMP (val txt: String, val pat: String) {
         while ((txt_len - i) >= (pat_len - j)) {
             // If there is a match...
             if (pat[j] == txt[i]) {
-//                markers[i] = '*'
-//                printSearch(i, j, markers)
+                markers[i] = '*'
+                printSearch(i, j, markers)
                 // Move both indices forward to search the next character for both.
                 i += 1
                 j += 1
@@ -54,15 +59,15 @@ class KMP (val txt: String, val pat: String) {
             if (j == pat_len) {
                 match_indices.add(i - j)
                 // Print where the pattern was found.
-//                println("Found pattern at index ${i - j}.")
-//                markers = CharArray(txt_len) { ' ' }
+                println("Found pattern at index ${i - j}.")
+                markers = CharArray(txt_len) { ' ' }
                 // Skip forward according to the lps array.
                 j = lps[j - 1]
             // else if there is a mismatch
             } else if (i < txt_len && pat[j] != txt[i]){
-//                markers[i] = '|'
-//                printSearch(i, j, markers)
-//                markers = CharArray(txt_len) { ' ' }
+                markers[i] = '|'
+                printSearch(i, j, markers)
+                markers = CharArray(txt_len) { ' ' }
                 // If we already have a partial match...
                 if (j != 0) {
                     // Skip forward according to the lps array.
