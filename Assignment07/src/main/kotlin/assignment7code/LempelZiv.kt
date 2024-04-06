@@ -1,15 +1,85 @@
 package assignment7code
 
+import java.io.File
 fun main() {
-    val originalText = "TOBEORNOTTOBEORTOBEORNOT"
-    println("Original text: $originalText")
+    runLZ("TOBEORNOTTOBEORTOBEORNOT")
+    runLZ("ABABABABAB")
+    runLZ("AAAAAAAAAAAAAAAAAAAAAAAAAAA")
+    runLZ("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
 
-    val compressed = compress(originalText)
+    val filePath = "src/main/kotlin/assignment7code/bee-movie.txt"
+    val text = File(filePath).readText(Charsets.UTF_8)
+
+    val compressedData = compress(text)
+
+    println("Bee Movie Ratio: ${calculateCompressionRatio(text, compressedData)}")
+
+    var ratio = 0.0
+    var numRepeats = 1
+    while (ratio < 1) {
+        val string = "A".repeat(numRepeats) // Correct way to repeat 'A' numRepeats times
+        val compressedString = compress(string)
+        ratio = calculateCompressionRatio(string, compressedString)
+        numRepeats++
+    }
+    println("Number of Repeats to get a ratio >1: $numRepeats")
+}
+/**
+ * Demonstrates the Lempel-Ziv-Welch (LZW) compression and decompression processes on a given text,
+ * and calculates the compression ratio of the compressed data. This function serves as a utility
+ * for showcasing the entire workflow of the LZW algorithm including compression, decompression,
+ * and efficiency analysis through the compression ratio.
+ *
+ * The function performs the following steps:
+ * 1. Prints the original text to the console.
+ * 2. Compresses the original text using the LZW algorithm and prints the compressed data.
+ * 3. Decompresses the compressed data back into text and prints the decompressed text.
+ * 4. Calculates the compression ratio based on the original and compressed data sizes and prints this value.
+ *
+ * @param text The original text to be compressed and decompressed. This serves as the input for the
+ *             demonstration of the LZW algorithm's functionality.
+ */
+fun runLZ(text: String): Double {
+    println("Original text: $text")
+
+    val compressed = compress(text)
     println("Compressed: $compressed")
 
     val decompressed = decompress(compressed)
     println("Decompressed: $decompressed")
+
+    val ratio = calculateCompressionRatio(text, compressed)
+    println("Compression Ratio: $ratio")
+
+    return ratio
 }
+
+
+/**
+ * Calculates the compression ratio of data compressed using the Lempel-Ziv-Welch (LZW) algorithm or similar methods.
+ *
+ * The compression ratio is determined by comparing the size of the original text (assumed to be stored
+ * in an 8-bit per character format) against the size of the compressed data, which is represented as a
+ * list of integers (with each integer assumed to be stored in a 32-bit format).
+ *
+ * This function provides a simple metric to evaluate the effectiveness of the compression by measuring
+ * how much the original data has been reduced in size. A higher ratio indicates better compression efficiency.
+ *
+ * @param originalText The original text that was compressed, as a string.
+ * @param compressedData The result of compressing the original text, represented as a list of integers.
+ * @return The compression ratio, calculated as the size of the original data divided by the size of the
+ *         compressed data. The size is calculated in bits based on the assumptions mentioned above.
+ */
+fun calculateCompressionRatio(originalText: String, compressedData: List<Int>): Double {
+    // Assuming each character in the original text is stored as an 8-bit byte
+    val sizeOfOriginalData = originalText.length * 8 // Size in bits
+
+    // Assuming each integer in the compressed data is stored as a 32-bit entity
+    val sizeOfCompressedData = compressedData.size * 32 // Size in bits
+
+    return sizeOfOriginalData.toDouble() / sizeOfCompressedData
+}
+
 
 /**
  * Compresses a given string input using the Lempel-Ziv-Welch (LZW) algorithm.
