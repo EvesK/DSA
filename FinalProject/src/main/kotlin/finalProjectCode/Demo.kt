@@ -11,9 +11,10 @@ import org.knowm.xchart.style.markers.SeriesMarkers
 
 
 var isPaused = true
-lateinit var chart: XYChart
-lateinit var panel: XChartPanel<XYChart>
 
+/**
+ * Initializes the application, sets up the main frame and chart panel, and prompts the user for initial data configuration.
+ */
 fun main() {
     SwingUtilities.invokeLater {
         // Set up the main frame and chart panel
@@ -66,6 +67,12 @@ fun main() {
     }
 }
 
+/**
+ * Displays the initial points on the chart.
+ * @param points The list of points to display.
+ * @param chart The XY chart where points are displayed.
+ * @param panel The panel hosting the chart.
+ */
 fun displayPoints(points: List<Point>, chart: XYChart, panel: XChartPanel<XYChart>) {
     val xs = points.map { it.coordinates[0] }.toDoubleArray()
     val ys = points.map { it.coordinates[1] }.toDoubleArray()
@@ -77,7 +84,14 @@ fun displayPoints(points: List<Point>, chart: XYChart, panel: XChartPanel<XYChar
     panel.repaint()
 }
 
-
+/**
+ * Sets up the user interface controls and handles the clustering interaction.
+ * @param points The list of points used for clustering.
+ * @param clusters The list of initial clusters.
+ * @param panel The panel where clustering results are displayed.
+ * @param frame The main application frame.
+ * @param chart The chart used for displaying clustering results.
+ */
 fun setupUI(points: List<Point>, clusters: List<Cluster>, panel: XChartPanel<XYChart>, frame: JFrame, chart: XYChart) {
     val controls = JPanel()
     val actionButton = JButton("Run").apply {
@@ -129,37 +143,11 @@ fun setupUI(points: List<Point>, clusters: List<Cluster>, panel: XChartPanel<XYC
     frame.repaint()
 }
 
-
 /**
- * Create the initial blank graph.
- */
-fun createChart(): XYChart {
-    return XYChartBuilder().width(800).height(600).title("K-Means Clustering").build().apply {
-        styler.defaultSeriesRenderStyle = XYSeries.XYSeriesRenderStyle.Scatter
-        styler.isChartTitleVisible = true
-        styler.chartTitlePadding = 10
-        styler.isLegendVisible = false
-        styler.markerSize = 6
-    }
-}
-
-/**
- * Plot the points in black before any clustering begins.
- */
-fun plotInitialPoints(points: List<Point>) {
-    val xs = points.map { it.coordinates[0] }.toDoubleArray()
-    val ys = points.map { it.coordinates[1] }.toDoubleArray()
-    chart.addSeries("All Points", xs, ys).apply {
-        marker = SeriesMarkers.CIRCLE
-        markerColor = java.awt.Color.BLACK
-        isShowInLegend = false
-    }
-    panel.revalidate()
-    panel.repaint()
-}
-
-/**
- * Draw each step of the k-means algorithm on the UI panel.
+ * Draws each step of the k-means algorithm on the UI panel, updating clusters and centroids dynamically.
+ * @param clusters The list of clusters being visualized.
+ * @param chart The XY chart where clusters are displayed.
+ * @param panel The panel hosting the chart.
  */
 fun plotClustersInteractive(clusters: List<Cluster>, chart: XYChart, panel: XChartPanel<XYChart>) {
     SwingUtilities.invokeLater {

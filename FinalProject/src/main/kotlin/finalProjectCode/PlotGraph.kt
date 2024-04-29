@@ -20,8 +20,9 @@ val XChartSeriesColors = arrayOf(
 )
 
 /**
- * Create and plot a random graph. Adjust numPoints and clustered to generate
- * different graphs, adjust k to specify the number of clusters.
+ * Entry point of the application which initializes and runs the k-means clustering.
+ * Adjust `numPoints` and `clustered` to generate different distributions of graphs,
+ * and adjust `k` to specify the number of clusters.
  */
 fun main() {
     // Adjust numPoints and clustered to generate different graphs.
@@ -32,8 +33,9 @@ fun main() {
 }
 
 /**
- * Given a list of 2D clusters, plots the clusters on a graph. Displays the graph in a
- * pop-up and saves it to [fileName] inside of src/main/kotlin/finalProjectCode.
+ * Plots the given clusters on a graph, displays the graph in a pop-up window, and saves it to a file.
+ * @param clusters The list of clusters to plot.
+ * @param fileName The name of the file where the graph is saved. Default is "KMeans_Clustering".
  */
 fun plotClusters(clusters: List<Cluster>, fileName: String = "KMeans_Clustering") {
     val chart = XYChartBuilder().width(800).height(600).title("K-Means Clustering").build()
@@ -79,7 +81,10 @@ fun plotClusters(clusters: List<Cluster>, fileName: String = "KMeans_Clustering"
 }
 
 /**
- * Generates a random set of points, either completely random or intentionally clustered.
+ * Generates a set of points either randomly or clustered based on the input.
+ * @param numPoints The number of points to generate.
+ * @param clustered Whether the points should be generated with intentional clustering.
+ * @return A list of Points either randomly distributed or clustered.
  */
 fun generateRandomPoints(numPoints: Int, clustered: Boolean): List<Point> {
     val points = mutableListOf<Point>()

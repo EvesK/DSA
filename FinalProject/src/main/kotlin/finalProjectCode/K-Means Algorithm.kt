@@ -9,13 +9,19 @@ data class Cluster(var centroid: Point, var points: MutableList<Point> = mutable
 
 /**
  * Calculates the Euclidean distance between two points.
+ * @param p1 The first point.
+ * @param p2 The second point.
+ * @return The Euclidean distance between p1 and p2.
  */
 fun euclideanDistance(p1: Point, p2: Point): Double {
     return sqrt(p1.coordinates.zip(p2.coordinates) { a, b -> (a - b) * (a - b)}.sum())
 }
 
 /**
- * Initializes clusters with random centroids from a list of points.
+ * Initializes clusters with random centroids based on the range of given points.
+ * @param points The list of points from which to derive the minimum and maximum bounds for centroid initialization.
+ * @param k The number of clusters to initialize, which also determines the number of centroids.
+ * @return A list of clusters with randomly initialized centroids.
  */
 fun initializeCentroids(points: List<Point>, k: Int): List<Cluster> {
     val centroids = mutableListOf<Point>()
@@ -31,10 +37,13 @@ fun initializeCentroids(points: List<Point>, k: Int): List<Cluster> {
     return centroids.map { Cluster(it) }
 }
 
+
 /**
- * Performs the clustering step that occurs for every iteration of the k-means algorithm.
- * Assigns points to clusters and updates the centroid of each cluster. Returns true if the
- * centroids have stabilized, else false.
+ * Performs one iteration of the clustering step in the k-means algorithm.
+ * Assigns points to the nearest cluster based on Euclidean distance and updates centroids.
+ * @param points The list of points to be clustered.
+ * @param clusters The current list of clusters with centroids.
+ * @return true if centroids have not moved significantly, indicating potential stabilization; otherwise, false.
  */
 fun performClusteringStep(points: List<Point>, clusters: List<Cluster>): Boolean {
     assignPointsToClusters(clusters, points)  // Assign points to the nearest centroids
@@ -42,8 +51,9 @@ fun performClusteringStep(points: List<Point>, clusters: List<Cluster>): Boolean
 }
 
 /**
- * Assigns points to clusters based on Euclidean distance between the point and the cluster
- * centroid.
+ * Assigns each point to the closest cluster based on Euclidean distance.
+ * @param clusters The clusters to which points will be assigned.
+ * @param points The points to be assigned to clusters.
  */
 fun assignPointsToClusters(clusters: List<Cluster>, points: List<Point>) {
     clusters.forEach { it.points.clear() }
@@ -54,8 +64,10 @@ fun assignPointsToClusters(clusters: List<Cluster>, points: List<Point>) {
 }
 
 /**
- * Updates the centroid of each cluster by taking the average of all of the points in the cluster.
- * Returns true if the centroids have stabilized, else false.
+ * Updates the centroid of each cluster based on the points assigned to it.
+ * Determines if the centroid position has stabilized (i.e., changed very little).
+ * @param clusters The clusters whose centroids need updating.
+ * @return true if centroids moved more than a specified threshold, otherwise false.
  */
 fun updateCentroids(clusters: List<Cluster>): Boolean {
     var moved = false
@@ -74,9 +86,13 @@ fun updateCentroids(clusters: List<Cluster>): Boolean {
 }
 
 /**
- * Runs the k-means algorithm. Tracks the movement of cluster centroids to determine
- * when the algorithm has stabilized, i.e. when the cluster centroids have not moved
- * for [stability] iterations.
+ * Runs the k-means clustering algorithm on a set of points and returns the resulting clusters.
+ * Tracks the movement of cluster centroids to determine when the algorithm has stabilized.
+ * @param points The points to cluster.
+ * @param k The number of clusters to form.
+ * @param epsilon The minimum change in centroid position between iterations for the algorithm to continue running.
+ * @param stability The number of consecutive iterations with minimal centroid changes required to consider the clustering stabilized.
+ * @return A list of clusters with points assigned.
  */
 fun kMeans(points: List<Point>, k: Int, epsilon: Double = 0.01, stability: Int = 10): List<Cluster> {
     val clusters = initializeCentroids(points, k)
@@ -101,9 +117,10 @@ fun kMeans(points: List<Point>, k: Int, epsilon: Double = 0.01, stability: Int =
 }
 
 /**
- * Calls the updateCentroid function and tracks the movement of the centroids.
- * This movement is used to determine if the centroids have stabilized in the
- * k-means function.
+ * Calculates the movement of centroids after updating their positions to the average location of assigned points.
+ * This method is used to track the changes in centroids during the k-means clustering to determine stabilization.
+ * @param clusters The clusters whose centroids are to be updated and tracked.
+ * @return A list of double values representing the movement magnitude of each centroid.
  */
 fun updateCentroidsAndGetMovements(clusters: List<Cluster>): MutableList<Double> {
     return clusters.map { cluster ->
